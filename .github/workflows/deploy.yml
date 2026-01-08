@@ -1,0 +1,27 @@
+name: Deploy to Google Sheets
+on:
+  push:
+    branches: [ main ]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with: { node-version: '18' }
+
+      - name: Install Clasp
+        run: npm install -g @google/clasp
+
+      - name: Inject Secrets into Code
+        run: |
+          sed -i 's/{{ID_ROOT_DIR}}/${{ secrets.ID_ROOT_DIR }}/g' src/Code.ts
+          sed -i 's/{{ID_TEMPLATE_SS}}/${{ secrets.ID_TEMPLATE_SS }}/g' src/Code.ts
+
+      - name: Create clasprc file
+        run: echo "${{ secrets.CLASPRC_JSON }}" > ~/.clasprc.json
+        
+      - name: Push to Apps Script
+        run: clasp push -f
