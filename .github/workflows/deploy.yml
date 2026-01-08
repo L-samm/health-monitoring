@@ -17,11 +17,18 @@ jobs:
 
       - name: Inject Secrets into Code
         run: |
-          sed -i 's/{{ID_ROOT_DIR}}/${{ secrets.ID_ROOT_DIR }}/g' src/Code.ts
-          sed -i 's/{{ID_TEMPLATE_SS}}/${{ secrets.ID_TEMPLATE_SS }}/g' src/Code.ts
+          sed -i 's/{{ID_ROOT_DIR}}/${{ secrets.ID_ROOT_DIR }}/g' src/env.ts
+          sed -i 's/{{ID_TEMPLATE_SS}}/${{ secrets.ID_TEMPLATE_SS }}/g' src/env.ts
 
       - name: Create clasprc file
         run: echo "${{ secrets.CLASPRC_JSON }}" > ~/.clasprc.json
+
+      - name: Create .clasp.json
+        run: |
+          echo '{
+            "scriptId":"${{ secrets.SCRIPT_ID }}",
+            "rootDir":"src"
+          }' > .clasp.json
         
       - name: Push to Apps Script
         run: clasp push -f
