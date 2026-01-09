@@ -32,6 +32,9 @@ jobs:
             "scriptId":"${{ secrets.SCRIPT_ID }}",
             "rootDir":"src"
           }' > .clasp.json
+
+      - name: Debug .clasprc.json
+        run: ls -la ~ | grep .clasprc.json
         
       - name: Push to Apps Script
-        run: clasp push -f --trace
+        run: clasp push -f
