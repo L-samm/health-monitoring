@@ -21,7 +21,10 @@ jobs:
           sed -i 's/{{ID_TEMPLATE_SS}}/${{ secrets.ID_TEMPLATE_SS }}/g' src/env.ts
 
       - name: Create clasprc file
-        run: echo "${{ secrets.CLASPRC_JSON }}" > ~/.clasprc.json
+        run: |
+          cat <<EOF > ~/.clasprc.json
+          ${{ secrets.CLASPRC_JSON }}
+          EOF
 
       - name: Create .clasp.json
         run: |
@@ -31,4 +34,4 @@ jobs:
           }' > .clasp.json
         
       - name: Push to Apps Script
-        run: clasp push -f
+        run: clasp push -f --trace
